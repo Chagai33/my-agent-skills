@@ -34,3 +34,7 @@ Bridging the gap between scalable IT infrastructure and high-quality application
 
 ## 🌐 Connect
 * **LinkedIn:** [Chagai Yechiel](https://www.linkedin.com/in/chagai-yechiel/)
+
+## ⚠️ Disclaimer
+The materials, code snippets, and architectural templates provided in this repository are for informational and educational purposes. They are provided **"AS IS"** without any warranties of any kind. 
+Use of these skills and implementations in production environments is strictly **at your own risk**. The author assumes no liability for any security breaches, data loss, or system instability resulting from the use of this repository.
