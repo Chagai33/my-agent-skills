@@ -1,6 +1,6 @@
 // ../.claude/skills/firebase-realtime-auth/templates/firebaseService.ts
 
-import { ref, onValue, off, runTransaction } from 'firebase/database';
+import { ref, onValue, off, runTransaction, DataSnapshot } from 'firebase/database';
 import { database } from '../lib/firebase';
 
 export class FirebaseService {
@@ -15,7 +15,7 @@ export class FirebaseService {
     ): () => void {
         const detailsRef = ref(database, `events/${eventId}/details`);
 
-        const onValueChange = (snapshot: any) => {
+        const onValueChange = (snapshot: DataSnapshot) => {
             callback(snapshot.exists() ? snapshot.val() : null);
         };
 
@@ -37,7 +37,11 @@ export class FirebaseService {
         const eventRef = ref(database, `events/${eventId}`);
         let newItemId: string | null = null;
 
-        await runTransaction(eventRef, (currentEventData: any | null) => {
+        await runTransaction(eventRef, (currentEventData: {
+            details?: { allowItems: boolean, limit: number },
+            items?: Record<string, unknown>,
+            userCounts?: Record<string, number>
+        } | null) => {
             // 1. Return current state if null (Firebase internal retry logic)
             if (currentEventData === null) return currentEventData;
 
@@ -46,7 +50,7 @@ export class FirebaseService {
             const creatorId = itemData.creatorId;
             const itemCount = currentEventData.userCounts?.[creatorId] || 0;
 
-            if (!details.allowItems) {
+            if (!details || !details.allowItems) {
                 throw new Error('Not allowed to add items.');
             }
 

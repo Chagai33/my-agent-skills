@@ -19,7 +19,13 @@ interface State<T> {
     deleteItem: (itemId: string) => void;
 }
 
-export const useStore = <T extends { id?: string; items?: Record<string, any>; assignments?: Record<string, any> }>() => create<State<T>>((set, get) => ({
+interface SpecificDomainModel {
+    id: string;
+    items?: Record<string, Item>;
+    assignments?: Record<string, Assignment>;
+}
+
+export const useStore = create<State<SpecificDomainModel>>((set, get) => ({
     currentEvent: null,
     isLoading: true,
 
@@ -41,10 +47,14 @@ export const useStore = <T extends { id?: string; items?: Record<string, any>; a
             };
         }
 
-        // Note: This relies on a spread which is shallow. 
-        // For production using DeepPartial, consider using a deep merge utility (like lodash merge or similar structure)
+        // safely merge nested objects like items and assignments
         return {
-            currentEvent: { ...state.currentEvent, ...updates } as T,
+            currentEvent: {
+                ...state.currentEvent,
+                ...updates,
+                items: { ...(state.currentEvent?.items || {}), ...(updates.items || {}) },
+                assignments: { ...(state.currentEvent?.assignments || {}), ...(updates.assignments || {}) }
+            } as SpecificDomainModel,
             isLoading: false
         };
     }),
@@ -72,7 +82,7 @@ export const useStore = <T extends { id?: string; items?: Record<string, any>; a
                 ...state.currentEvent,
                 items: updatedItems,
                 assignments: updatedAssignments
-            } as T
+            } as SpecificDomainModel
         };
     }),
 }));

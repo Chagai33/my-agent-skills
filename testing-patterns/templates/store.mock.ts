@@ -16,7 +16,7 @@ jest.mock('../store/useStore');
 const mockedUseStore = useStore as jest.MockedFunction<typeof useStore>;
 
 // 3. Define the initial, pristine state
-const initialState: State<any> = {
+const initialState: State<unknown> = {
     currentEvent: null,
     isLoading: false,
     error: null,
@@ -35,7 +35,7 @@ describe('Component with Zustand Store', () => {
 
         // This is a simplified mock for the selector behavior:
         // useStore((state) => state.property)
-        mockedUseStore.mockImplementation((selector: any) => {
+        mockedUseStore.mockImplementation((selector: (state: State<unknown>) => unknown) => {
             // For exhaustive mocks, you could implement the actual selector logic:
             // return selector(initialState);
 
@@ -47,7 +47,7 @@ describe('Component with Zustand Store', () => {
     it('should handle custom state injection safely', () => {
         // You can locally override the state for a specific test
         const customState = { ...initialState, isLoading: true };
-        mockedUseStore.mockImplementation((selector: any) => selector(customState));
+        mockedUseStore.mockImplementation((selector: (state: State<unknown>) => unknown) => selector(customState));
 
         // Assertions...
     });

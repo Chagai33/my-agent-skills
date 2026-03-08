@@ -32,10 +32,10 @@ export const useGoogleCalendar = () => {
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
 
-export const GoogleCalendarProvider: React.FC<{children: ReactNode}> = ({ children }) => {
+export const GoogleCalendarProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { t } = useTranslation();
   // const { user } = useAuth(); // Assume user context exists
-  
+
   const [isConnected, setIsConnected] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [calendarId, setCalendarId] = useState<string | null>(null);
@@ -63,7 +63,7 @@ export const GoogleCalendarProvider: React.FC<{children: ReactNode}> = ({ childr
     if (calendarId === 'primary' || !calendarId) {
       throw new Error('Cannot sync to primary calendar. Please choose a dedicated calendar.');
     }
-    
+
     setIsSyncing(true);
     try {
       // await googleCalendarService.syncEntityToCalendar(entityId);
@@ -90,7 +90,7 @@ export const GoogleCalendarProvider: React.FC<{children: ReactNode}> = ({ childr
 
   // ... implementation of createCalendar, updateCalendarSelection, disconnect, etc.
 
-  const value: any = {
+  const value: GoogleCalendarContextType = {
     isConnected,
     isSyncing,
     calendarId,
@@ -100,7 +100,9 @@ export const GoogleCalendarProvider: React.FC<{children: ReactNode}> = ({ childr
     connectToGoogle,
     syncSingleEntity,
     syncMultipleEntities,
-    // ...
+    createCalendar: async () => ({ calendarId: '', calendarName: '' }), // dummy implementation for template
+    updateCalendarSelection: async () => { }, // dummy implementation for template
+    disconnect: async () => { }, // dummy implementation for template
   };
 
   return (

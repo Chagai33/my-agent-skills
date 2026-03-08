@@ -1,7 +1,12 @@
 // ../.claude/skills/zustand-state-architecture/templates/selectors.ts
 
 // 1. Types for context
-interface AppState { currentEvent: any; }
+interface SpecificDomainModel {
+    id: string;
+    items?: Record<string, unknown>;
+    assignments?: Record<string, Assignment>;
+}
+interface AppState { currentEvent: SpecificDomainModel | null; }
 interface Assignment { id: string; itemId: string; }
 
 // 2. ✨ Golden Example: Standard Entity Array Selector
@@ -11,7 +16,7 @@ export const selectItems = (state: AppState) => {
     if (!event?.items) return [];
 
     return Object.entries(event.items).map(([id, item]) => ({
-        ...(item as any),
+        ...(item as Record<string, unknown>),
         id,
         eventId: event.id, // Inject parent ID for convenience
     }));
