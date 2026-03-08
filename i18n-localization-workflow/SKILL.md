@@ -14,6 +14,7 @@ This project uses `react-i18next` for translations, supporting languages like He
 - Performing bulk updates to the `.json` language files.
 
 ## ❌ What NOT to do
+- **Strictly NO Regex for Source Code Parsing**: Never use regular expressions (Regex) to extract translation keys (`t('...')`) or find hardcoded text (e.g., matching Hebrew characters). They are fragile and cause silent failures. Always use an AST parser (like `ts-morph` or `typescript`) for robust static analysis.
 - **DO NOT hardcode user-facing text.** Never write `<div>Hello World</div>`. Always use `<div>{t('common.greeting')}</div>`.
 - **DO NOT use dynamic keys that cannot be statically analyzed.** Avoid `t("status_" + status)`. Prefer mapping statuses to explicit keys, or sending the exact key. This breaks static analysis scripts.
 - **DO NOT manually edit multiple `.json` files for large structural changes.** If you are adding a whole new section (e.g., a new page), use the `update_locales.cjs` script to patch all languages simultaneously using `deepMerge`.

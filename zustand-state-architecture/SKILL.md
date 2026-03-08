@@ -14,6 +14,8 @@ This project uses a standardized Multi-Tenant approach to global state managemen
 - Refactoring `useState`, `useContext`, or prop-drilling into global state
 
 ## ❌ What NOT to do
+- **Strictly No 'any' Types**: Do not declare generic objects using `any` (e.g., `currentEvent: any`). You must use TypeScript Generics (e.g., `State<T>`) so the skill can be injected gracefully into specific domains.
+- **No Client-Side Database Cascading Wipes**: You must NEVER securely wipe nested documents or collections from the client. Condition the Zustand `delete` action as a strictly **UI Optimistic Update** for immediate feedback, but the authoritative deletion of children (like `Assignments` belonging to an `Event`) MUST occur on the Backend (e.g., Firebase Cloud Functions triggered via `onDelete`).
 - **Do not use React Context** for application-wide data that updates frequently.
 - **Do not mutate state directly**. Always return a new object in the `set()` function.
 - **Do not put complex business logic directly in components**. Move update actions to the store.
@@ -35,6 +37,6 @@ See the example of standardized and optimized selectors:
 [templates/selectors.ts](templates/selectors.ts)
 
 ## Key Concepts
-1. **Initial State Handling**: Handle gracefully when data (`currentEvent`) is null vs when partial updates arrive.
-2. **Cascading Deletions**: If you delete a parent entity (e.g. `MenuItem`), ensure associated child entities (e.g. `Assignments`) are cleaned up within the same action.
+1. **Initial State Handling**: Handle gracefully when data (`currentEvent`) is null vs when partial updates arrive. Use Generics and `DeepPartial<T>` utility types for type safety during shallow merges.
+2. **UX Optimistic Updates vs Cascading Deletions**: If you delete a parent entity (e.g. `MenuItem`), ensure associated child entities (e.g. `Assignments`) are cleaned up instantly from the UI via the action. However, do NOT manage backend cascading wipes here.
 3. **Map Transformations**: For relational data (e.g. assignments mapped to items), convert `Object.entries` outputs to arrays or `Map` collections at the selector level so the components stay clean.

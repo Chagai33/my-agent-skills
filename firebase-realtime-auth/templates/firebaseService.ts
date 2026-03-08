@@ -9,9 +9,9 @@ export class FirebaseService {
      * Listen only to specific paths to reduce bandwidth.
      * Don't listen to the parent object if it contains heavy lists.
      */
-    static subscribeToDetails(
+    static subscribeToDetails<T>(
         eventId: string,
-        callback: (details: any | null) => void
+        callback: (details: T | null) => void
     ): () => void {
         const detailsRef = ref(database, `events/${eventId}/details`);
 
@@ -33,7 +33,7 @@ export class FirebaseService {
      * Use this when multiple users might try to write simultaneously.
      * It re-runs automatically if the data changed during execution.
      */
-    static async addRestrictedItem(eventId: string, itemData: any): Promise<string> {
+    static async addRestrictedItem<T>(eventId: string, itemData: T & { creatorId: string }): Promise<string> {
         const eventRef = ref(database, `events/${eventId}`);
         let newItemId: string | null = null;
 

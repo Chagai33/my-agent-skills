@@ -13,6 +13,8 @@ This project uses Firebase Realtime Database with a Flat Model architecture and 
 - Handling user identity where users aren't explicitly registered (frictionless join).
 
 ## ❌ What NOT to do
+- **Strictly No 'any' Types**: Do not declare callbacks or models using `any` (e.g., `callback: (details: any)`). You must use TypeScript Generics (e.g., `static subscribeToDetails<T>`) to enforce type safety in our abstract service methods.
+- **No Client-Side Backend Wipes**: If deleting an item requires nested operations (like cleaning up child nodes in the Realtime Database), do NOT perform this cascading delete from the client. Use a Firebase Cloud Function (e.g., `onDelete` trigger) so it handles the wipe securely and reliably on the server.
 - **Do not listen to the entire root or event object (`/events/eventId`)**. Always use **Granular Subscriptions** (e.g., `/events/eventId/details`, `/events/eventId/menuItems`).
 - **Do not forget to clean up listeners.** Always return the `off()` function in `useEffect`.
 - **Do not force a login screen.** The app relies on "Anonymous Auth First". Always call `signInAnonymously(auth)` in the background.
